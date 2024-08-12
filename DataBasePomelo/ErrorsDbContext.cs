@@ -7,7 +7,6 @@ namespace DataBasePomelo
     {
         public ErrorsDbContext(DbContextOptions<ErrorsDbContext> options) : base(options) { }
 
-        public DbSet<EnumsErrorsEntity> EnumeErrors { get; set; }
         public DbSet<ErrorsEntity> Errors { get; set; }
     }
 }

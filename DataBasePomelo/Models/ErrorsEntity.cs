@@ -1,9 +1,13 @@
-﻿namespace DataBasePomelo.Models
+﻿using MySqlConnector;
+
+namespace DataBasePomelo.Models
 {
     public class ErrorsEntity
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Message { get; set; } = string.Empty;
-        public EnumsErrorsEntity? EnumsErrors { get; set; }
+        public string Level { get; set; }
+        public DateTime Date { get; set; }
+        public string Exception { get; set; }
     }
 }
