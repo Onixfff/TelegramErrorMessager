@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
+using Telegram;
 
 namespace TelegramErrorMessager
 {
@@ -20,7 +20,7 @@ namespace TelegramErrorMessager
 
             // Получаем строку подключения из конфигурации
             var connectionString = configuration.GetConnectionString("DataBasePomelo");
-
+            services.AddHostedService<Worker>();
             services.AddDbContext<ErrorsDbContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 

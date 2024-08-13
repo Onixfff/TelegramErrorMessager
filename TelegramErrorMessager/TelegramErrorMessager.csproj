@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
   </ItemGroup>
 
@@ -28,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataBasePomelo\DataBasePomelo.csproj" />
+    <ProjectReference Include="..\Telegram\Telegram.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
     <PackageReference Include="Telegram.Bot" Version="19.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controlls\" />
+    <Folder Include="Models\" />
+    <Folder Include="Views\" />
   </ItemGroup>
 
 </Project>
