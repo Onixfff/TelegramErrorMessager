@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controlls\" />
     <Folder Include="Views\" />
   </ItemGroup>
 

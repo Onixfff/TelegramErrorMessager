@@ -1,6 +1,4 @@
-﻿using ErrorBot.Options;
-
-namespace ErrorBot
+﻿namespace ErrorBot
 {
     public class Program
     {

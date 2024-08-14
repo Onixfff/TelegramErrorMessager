@@ -11,6 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramErrorMessager", "Te
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErrorBot", "ErrorBot\ErrorBot.csproj", "{43AC2D7C-6B8B-40D1-8999-F456AF378099}"
+	ProjectSection(ProjectDependencies) = postProject
+		{47E5FB1F-A96E-4423-939D-C2167584D198} = {47E5FB1F-A96E-4423-939D-C2167584D198}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

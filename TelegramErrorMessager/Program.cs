@@ -1,4 +1,5 @@
 ﻿using DataBasePomelo;
+using DataBasePomelo.Interface;
 using ErrorBot;
 using ErrorBot.Options;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,11 @@ namespace TelegramErrorMessager
 
                     services.AddDbContext<ErrorsDbContext>(options =>
                         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+                    services.AddTransient<IMessageUpdate, Message>();
+
+                    var userIds = configuration.GetSection("Peoples").Get<List<long>>();
+                    services.AddSingleton(userIds);
 
                     services.AddHostedService<TelegramBotBackgroundService>();
 

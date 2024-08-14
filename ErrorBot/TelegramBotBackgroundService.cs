@@ -1,3 +1,4 @@
+using DataBasePomelo.Interface;
 using ErrorBot.Options;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
@@ -12,13 +13,20 @@ namespace ErrorBot
     public class TelegramBotBackgroundService : BackgroundService
     {
         private readonly ILogger<TelegramBotBackgroundService> _logger;
+        private readonly IMessageUpdate _messageUpdate;
         private readonly TelegramOptions _telegramOptions;
+        private readonly List<long> _userChatIds; // Список chat IDs пользователей
 
-        public TelegramBotBackgroundService(ILogger<TelegramBotBackgroundService> logger,
-            IOptionsMonitor<TelegramOptions> telegramOptions)
+        public TelegramBotBackgroundService(
+            ILogger<TelegramBotBackgroundService> logger,
+            IOptionsMonitor<TelegramOptions> telegramOptions,
+            IMessageUpdate messageUpdate,
+            List<long> userChatIds)
         {
             _logger = logger;
             _telegramOptions = telegramOptions.CurrentValue;
+            _messageUpdate = messageUpdate;
+            _userChatIds = userChatIds;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

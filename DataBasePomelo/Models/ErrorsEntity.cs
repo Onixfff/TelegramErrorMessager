@@ -1,6 +1,4 @@
-﻿using MySqlConnector;
-
-namespace DataBasePomelo.Models
+﻿namespace DataBasePomelo.Models
 {
     public class ErrorsEntity
     {
