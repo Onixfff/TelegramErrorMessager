@@ -1,8 +1,10 @@
 ﻿using DataBasePomelo;
+using ErrorBot;
+using ErrorBot.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Telegram;
+using Microsoft.Extensions.Hosting;
 
 namespace TelegramErrorMessager
 {
@@ -10,33 +12,33 @@ namespace TelegramErrorMessager
     {
         static void Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory) // Исправлено на AppContext.BaseDirectory для правильного пути
-                .AddJsonFile("appsettings.json")
+            var host = Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    config.SetBasePath(AppContext.BaseDirectory)
+                          .AddJsonFile("appsettings.json")
+                          .AddUserSecrets<Program>(optional: true); // Загружаем секреты пользователя
+                })
+
+                .ConfigureServices((context, services) =>
+                {
+                    var configuration = context.Configuration;
+
+                    // Получаем строку подключения из конфигурации
+                    var connectionString = configuration.GetConnectionString("DataBasePomelo");
+
+                    services.AddDbContext<ErrorsDbContext>(options =>
+                        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+                    services.AddHostedService<TelegramBotBackgroundService>();
+
+                    // Настраиваем TelegramOptions из конфигурации
+                    services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.Telegram));
+
+                })
                 .Build();
 
-            // Создаем объект ServiceCollection
-            var services = new ServiceCollection();
-
-            // Получаем строку подключения из конфигурации
-            var connectionString = configuration.GetConnectionString("DataBasePomelo");
-            services.AddHostedService<Worker>();
-            services.AddDbContext<ErrorsDbContext>(options =>
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
-            services.BuildServiceProvider();
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            // Получаем экземпляр DbContext из ServiceProvider
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ErrorsDbContext>();
-
-                // Ваша основная логика работы с DbContext
-                // Например, можно проверить, что контекст работает
-                Console.WriteLine("DbContext successfully created and ready to use.");
-            }
+            host.Run();
         }
     }
 }

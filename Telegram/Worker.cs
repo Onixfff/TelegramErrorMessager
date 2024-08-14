@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Telegram.Bot;
 
 namespace Telegram
 {
@@ -9,15 +11,19 @@ namespace Telegram
         private readonly ILogger<Worker> _logger;
 
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, IOptions<TelegramOptions> telegramOptions)
         {
             _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (stoppingToken.IsCancellationRequested) 
+            var botClient = new TelegramBotClient();
+
+            while (!stoppingToken.IsCancellationRequested) 
             {
+                await botClient.ReceiveAsync();
+
                 if (_logger.IsEnabled(LogLevel.Information))
                 {
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
