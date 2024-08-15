@@ -2,7 +2,7 @@
 {
     public interface IMessageUpdate
     {
-        Task<string> GetLastMessageAsync();
-        Task<string> GetMessageAsync(int id);
+        public Task<string> GetLastMessageAsync();
+        public Task<string> GetMessageAsync(int id);
     }
 }
