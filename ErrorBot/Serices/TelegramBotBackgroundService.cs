@@ -1,4 +1,3 @@
-using DataBasePomelo.Interface;
 using ErrorBot.Options;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
@@ -7,31 +6,35 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Requests;
 using Telegram.Bot.Types;
 
-namespace ErrorBot
+namespace ErrorBot.Serices
 {
 
     public class TelegramBotBackgroundService : BackgroundService
     {
         private readonly ILogger<TelegramBotBackgroundService> _logger;
-        private readonly IMessageUpdate _messageUpdate;
         private readonly TelegramOptions _telegramOptions;
-        private readonly List<long> _userChatIds; // Список chat IDs пользователей
+        private readonly List<long> _userChatIds;
+        private TelegramBotClient _botClient;
 
         public TelegramBotBackgroundService(
             ILogger<TelegramBotBackgroundService> logger,
             IOptionsMonitor<TelegramOptions> telegramOptions,
-            IMessageUpdate messageUpdate,
             List<long> userChatIds)
         {
             _logger = logger;
             _telegramOptions = telegramOptions.CurrentValue;
-            _messageUpdate = messageUpdate;
-            _userChatIds = userChatIds;
+            _botClient = CreateBotClient();
+
+            _userChatIds = userChatIds ?? new List<long>();
+        }
+
+        private TelegramBotClient CreateBotClient()
+        {
+            return new TelegramBotClient(_telegramOptions.Token);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var botClient = new TelegramBotClient(_telegramOptions.Token);
 
             ReceiverOptions receiverOptions = new()
             {
@@ -40,7 +43,7 @@ namespace ErrorBot
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                await botClient.ReceiveAsync(
+                await _botClient.ReceiveAsync(
                     updateHandler: HandlerUpdateAsync,
                     pollingErrorHandler: HandlerPollingErrorAsync,
                     receiverOptions: receiverOptions,
@@ -80,6 +83,15 @@ namespace ErrorBot
 
             Console.WriteLine(ErrorMessage);
             return Task.CompletedTask;
+        }
+
+        internal async Task SendMessageToAllUsersAsync(string message, CancellationToken stoppingToken)
+        {
+
+            foreach (var chatId in _userChatIds)
+            {
+                await _botClient.SendTextMessageAsync(chatId, message, cancellationToken: stoppingToken);
+            }
         }
     }
 }

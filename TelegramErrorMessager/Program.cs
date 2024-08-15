@@ -1,11 +1,13 @@
 ﻿using DataBasePomelo;
 using DataBasePomelo.Interface;
-using ErrorBot;
 using ErrorBot.Options;
+using DataBasePomelo.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ErrorBot.Serices;
+using ErrorBot.Interface;
 
 namespace TelegramErrorMessager
 {
@@ -26,15 +28,25 @@ namespace TelegramErrorMessager
                     var configuration = context.Configuration;
 
                     // Получаем строку подключения из конфигурации
-                    var connectionString = configuration.GetConnectionString("DataBasePomelo");
+                    var connectionString = configuration.GetConnectionString(nameof(DataBasePomelo));
 
                     services.AddDbContext<ErrorsDbContext>(options =>
                         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-                    services.AddTransient<IMessageUpdate, Message>();
-
                     var userIds = configuration.GetSection("Peoples").Get<List<long>>();
+
+                    if (userIds == null)
+                    {
+                        throw new InvalidOperationException("Configuration section 'Peoples' is missing or invalid.");
+                    }
+
                     services.AddSingleton(userIds);
+
+                    services.AddTransient<IJsonRead, JsonRead>();
+                    services.AddTransient<IMessageUpdate, Message>();
+                    services.AddTransient<IMessageNotifier, MessageNotifierService>();
+
+                    services.AddHostedService<MessagePollingBackgroundSerice>();
 
                     services.AddHostedService<TelegramBotBackgroundService>();
 
