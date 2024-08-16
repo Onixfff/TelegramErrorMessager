@@ -41,6 +41,7 @@ namespace TelegramErrorMessager
                     }
 
                     services.AddSingleton(userIds);
+                    services.AddSingleton<EventAggregator>();
 
                     services.AddTransient<IJsonRead, JsonRead>();
                     services.AddTransient<IMessageUpdate, Message>();

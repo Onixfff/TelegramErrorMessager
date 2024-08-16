@@ -18,16 +18,19 @@ namespace DataBasePomelo.Services
 
         public async Task<string> GetLastMessageAsync()
         {
-            var message = await _dbContext.Errors.OrderByDescending(m => m.Id).Select(e => e.Message).FirstOrDefaultAsync();
+            var result = await _dbContext.Errors
+                .OrderByDescending(m => m.Id)
+                .Select(e => new { e.Id, e.Message })
+                .FirstOrDefaultAsync();
 
-            var newMessageId = await _dbContext.Errors.OrderByDescending(m => m.Id).Select(m => m.Id).FirstOrDefaultAsync();
-            if (newMessageId > _lastId)
+            if (result != null && result.Id > _lastId)
             {
-                _lastId = newMessageId;
+                _lastId = result.Id;
                 await _jsonRead.SaveLastProcessedIdToJsonAsync(_lastId);
+                return result.Message;
             }
 
-            return message ?? string.Empty;
+            return string.Empty;
         }
 
         public async Task<string> GetMessageAsync(int id)

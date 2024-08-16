@@ -13,19 +13,25 @@ namespace ErrorBot.Serices
     {
         private readonly ILogger<TelegramBotBackgroundService> _logger;
         private readonly TelegramOptions _telegramOptions;
-        private readonly List<long> _userChatIds;
         private TelegramBotClient _botClient;
+        private readonly List<long> _userChatIds;
 
         public TelegramBotBackgroundService(
             ILogger<TelegramBotBackgroundService> logger,
             IOptionsMonitor<TelegramOptions> telegramOptions,
-            List<long> userChatIds)
+            List<long> userChatIds,
+            EventAggregator eventAggregator)
         {
             _logger = logger;
             _telegramOptions = telegramOptions.CurrentValue;
             _botClient = CreateBotClient();
 
             _userChatIds = userChatIds ?? new List<long>();
+
+            eventAggregator.Subscribe(async (message, token) =>
+            {
+                await SendMessageToAllUsersAsync(message, token);
+            });
         }
 
         private TelegramBotClient CreateBotClient()

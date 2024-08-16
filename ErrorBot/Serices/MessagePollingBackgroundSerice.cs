@@ -1,21 +1,20 @@
 ﻿using DataBasePomelo.Interface;
-using ErrorBot.Interface;
 
 namespace ErrorBot.Serices
 {
     public class MessagePollingBackgroundSerice : BackgroundService
     {
         private readonly IMessageUpdate _messageUpdate;
-        private readonly TelegramBotBackgroundService _telegramService;
+        private readonly EventAggregator _eventAggregator;
         private readonly ILogger<MessagePollingBackgroundSerice> _logger;
 
         public MessagePollingBackgroundSerice(
             IMessageUpdate messageUpdate,
-            TelegramBotBackgroundService telegramService,
+            EventAggregator eventAggregator,
             ILogger<MessagePollingBackgroundSerice> logger)
         {
             _messageUpdate = messageUpdate;
-            _telegramService = telegramService;
+            _eventAggregator = eventAggregator;
             _logger = logger;
         }
 
@@ -30,7 +29,7 @@ namespace ErrorBot.Serices
 
                     if (!string.IsNullOrEmpty(lastMessage))
                     {
-                        await _telegramService.SendMessageToAllUsersAsync(lastMessage, stoppingToken);
+                        await _eventAggregator.PublishMessage(lastMessage, stoppingToken);
                     }
 
                     await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
