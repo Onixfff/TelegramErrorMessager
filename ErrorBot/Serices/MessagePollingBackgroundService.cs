@@ -2,16 +2,16 @@
 
 namespace ErrorBot.Serices
 {
-    public class MessagePollingBackgroundSerice : BackgroundService
+    public class MessagePollingBackgroundService : BackgroundService
     {
         private readonly IMessageUpdate _messageUpdate;
         private readonly EventAggregator _eventAggregator;
-        private readonly ILogger<MessagePollingBackgroundSerice> _logger;
+        private readonly ILogger<MessagePollingBackgroundService> _logger;
 
-        public MessagePollingBackgroundSerice(
+        public MessagePollingBackgroundService(
             IMessageUpdate messageUpdate,
             EventAggregator eventAggregator,
-            ILogger<MessagePollingBackgroundSerice> logger)
+            ILogger<MessagePollingBackgroundService> logger)
         {
             _messageUpdate = messageUpdate;
             _eventAggregator = eventAggregator;

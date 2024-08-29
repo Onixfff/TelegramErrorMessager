@@ -47,7 +47,7 @@ namespace TelegramErrorMessager
                     services.AddTransient<IMessageUpdate, Message>();
                     services.AddTransient<IMessageNotifier, MessageNotifierService>();
 
-                    services.AddHostedService<MessagePollingBackgroundSerice>();
+                    services.AddHostedService<MessagePollingBackgroundService>();
 
                     services.AddHostedService<TelegramBotBackgroundService>();
 
